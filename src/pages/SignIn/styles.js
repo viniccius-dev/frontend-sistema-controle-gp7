@@ -1,5 +1,6 @@
-import styled from 'styled-components';
+import { styled } from '@mui/material/styles';
+import FormHelperText from '@mui/material/FormHelperText';
 
-export const Container = styled.div`
-
-`;
+export const StyledHelperText = styled(FormHelperText)({
+  fontWeight: 'bold',
+});

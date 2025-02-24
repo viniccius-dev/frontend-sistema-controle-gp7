@@ -1,22 +1,17 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Divider from '@mui/material/Divider';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
-import ForgotPassword from '../../components/ForgotPassword';
 import AppTheme from '../../styles/shared-theme-material-ui/AppTheme';
 import ColorModeSelect from '../../styles/shared-theme-material-ui/ColorModeSelect';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from '../../components/CustomIcons';
+import gp7Icon from '../../assets/gp7-logo.jpeg'
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -65,15 +60,6 @@ export function SignIn(props) {
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handleSubmit = (event) => {
     if (emailError || passwordError) {
@@ -95,7 +81,7 @@ export function SignIn(props) {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
+      setEmailErrorMessage('Por favor insira um nome de usuário válido.');
       isValid = false;
     } else {
       setEmailError(false);
@@ -104,7 +90,7 @@ export function SignIn(props) {
 
     if (!password.value || password.value.length < 6) {
       setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
+      setPasswordErrorMessage('Por favor insira uma senha.');
       isValid = false;
     } else {
       setPasswordError(false);
@@ -120,13 +106,15 @@ export function SignIn(props) {
       <SignInContainer direction="column" justifyContent="space-between">
         <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
         <Card variant="outlined">
-          <SitemarkIcon />
+          <Typography sx={{ textAlign: 'center' }}>
+            <img src={gp7Icon} alt="GP7 Icon" style={{ width: 60, height: 60 }} />
+          </Typography>
           <Typography
             component="h1"
             variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)', textAlign: 'center' }}
           >
-            Sign in
+            Acesse sua conta
           </Typography>
           <Box
             component="form"
@@ -140,14 +128,16 @@ export function SignIn(props) {
             }}
           >
             <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
+              <FormLabel htmlFor="email">Usuário</FormLabel>
               <TextField
                 error={emailError}
-                helperText={emailErrorMessage}
+                helperText={
+                  <span style={{ color: 'rgb(252, 44, 33)', fontWeight: 'bold' }}>{emailErrorMessage}</span>
+                }
                 id="email"
                 type="email"
                 name="email"
-                placeholder="your@email.com"
+                placeholder="Seu nome de usuário"
                 autoComplete="email"
                 autoFocus
                 required
@@ -157,10 +147,12 @@ export function SignIn(props) {
               />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Password</FormLabel>
+              <FormLabel htmlFor="password">Senha</FormLabel>
               <TextField
                 error={passwordError}
-                helperText={passwordErrorMessage}
+                helperText={
+                  <span style={{ color: 'rgb(252, 44, 33)', fontWeight: 'bold' }}>{passwordErrorMessage}</span>
+                }
                 name="password"
                 placeholder="••••••"
                 type="password"
@@ -173,11 +165,6 @@ export function SignIn(props) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
-            <ForgotPassword open={open} handleClose={handleClose} />
             <Button
               type="submit"
               fullWidth
@@ -186,44 +173,6 @@ export function SignIn(props) {
             >
               Sign in
             </Button>
-            <Link
-              component="button"
-              type="button"
-              onClick={handleClickOpen}
-              variant="body2"
-              sx={{ alignSelf: 'center' }}
-            >
-              Forgot your password?
-            </Link>
-          </Box>
-          <Divider>or</Divider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign in with Google')}
-              startIcon={<GoogleIcon />}
-            >
-              Sign in with Google
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign in with Facebook')}
-              startIcon={<FacebookIcon />}
-            >
-              Sign in with Facebook
-            </Button>
-            <Typography sx={{ textAlign: 'center' }}>
-              Don&apos;t have an account?{' '}
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
-              >
-                Sign up
-              </Link>
-            </Typography>
           </Box>
         </Card>
       </SignInContainer>
