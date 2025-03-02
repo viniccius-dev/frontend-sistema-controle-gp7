@@ -7,11 +7,10 @@ import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { Card, SignInContainer } from './styles';
-import AppTheme from '../../styles/shared-theme-material-ui/AppTheme';
 import ColorModeSelect from '../../styles/shared-theme-material-ui/ColorModeSelect';
 import gp7Icon from '../../assets/gp7-logo.jpeg'
 
-export function SignIn(props) {
+export function SignIn() {
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
@@ -57,7 +56,7 @@ export function SignIn(props) {
   };
 
   return (
-    <AppTheme {...props}>
+    <>
       <CssBaseline enableColorScheme />
       <SignInContainer direction="column" justifyContent="space-between">
         <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
@@ -131,6 +130,6 @@ export function SignIn(props) {
           </Box>
         </Card>
       </SignInContainer>
-    </AppTheme>
+    </>
   );
 }
