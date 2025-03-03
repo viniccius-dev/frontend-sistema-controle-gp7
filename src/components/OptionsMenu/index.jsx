@@ -51,6 +51,7 @@ export function OptionsMenu() {
         <MenuItem
           onClick={handleClose}
           sx={{
+            gap: '10px',
             [`& .${listItemIconClasses.root}`]: {
               ml: 'auto',
               minWidth: 0,

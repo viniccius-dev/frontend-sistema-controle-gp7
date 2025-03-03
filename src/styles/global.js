@@ -17,12 +17,12 @@ export default createGlobalStyle`
         }
     }
 
-    body {
+    ${'' /* body {
         background-color: ${({ theme }) => theme.COLORS.BACKGROUND_100};
         color: ${({ theme }) => theme.COLORS.BACKGROUND_900};
 
         --webkit-font-smoothing: antialiased;
-    }
+    } */}
 
     body, input, button, textarea {
         font-family: "Open Sans", sans-serif;

@@ -1,67 +1,55 @@
-import { Avatar, Box, Stack, Typography } from "@mui/material";
-import { Drawer } from "./styles";
-import { drawerClasses } from '@mui/material/Drawer';
-import { MenuContent } from "../../components/MenuContent";
-import { OptionsMenu } from "../../components/OptionsMenu";
+import { alpha } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
-export function Home() {
+import { SideMenu } from "../../components/SideMenu";
+import { AppNavbar} from "../../components/AppNavbar";
+import Box from '@mui/material/Box';
+import Stack from '@mui/material/Stack';
+import MainGrid from "../../components/MainGrid";
+
+import AppTheme from '../../styles/shared-theme-material-ui/AppTheme';
+import { chartsCustomizations } from '../../styles/shared-theme-material-ui/customizations/charts';
+import { dataGridCustomizations } from '../../styles/shared-theme-material-ui/customizations/dataGridCustomizations';
+import { datePickersCustomizations } from '../../styles/shared-theme-material-ui/customizations/datePickers';
+import { treeViewCustomizations } from '../../styles/shared-theme-material-ui/customizations/treeView';
+
+const xThemeComponents = {
+    ...chartsCustomizations,
+    ...dataGridCustomizations,
+    ...datePickersCustomizations,
+    ...treeViewCustomizations,
+  };
+
+export function Home(props) {
     return (
-        <Drawer
-            variant="permanent"
-            sx={{
-                display: { xs: 'none', md: 'block' },
-                [`& .${drawerClasses.paper}`]: {
-                backgroundColor: 'background.paper',
-                },
-            }}
-        >
-            <Box
-                sx={{
-                overflow: 'auto',
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                }}
-            >
-                <MenuContent />
-            </Box>   
-            
-            <Stack
-                direction="row"
-                sx={{
-                    p: 2,
-                    gap: 1,
-                    alignItems: 'center',
-                    borderTop: '1px solid',
-                    borderColor: 'divider'
-                }}
-            >
-                <Avatar 
-                    sizes="small"
-                    alt="Imagem do usuário Logado"
-                    src="https://github.com/viniccius-dev.png/"
-                />
-                <Box sx={{ mr: "auto" }}>
-                    <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                        Marcos Vinícius
-                    </Typography>
-                    <Typography 
-                        variant="caption" 
-                        sx={{ 
-                            color: 'text.secondary', 
-                            textOverflow: 'ellipsis', 
-                            width: '120px',
-                            display: 'inline-block',
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
+        <AppTheme {...props} themeComponents={xThemeComponents}>
+            <CssBaseline enableColorScheme />
+            <Box sx={{ display: 'flex' }}>
+                <SideMenu />
+                <AppNavbar />
+                {/* Main Content */}
+                <Box
+                component="main"
+                sx={(theme) => ({
+                    flexGrow: 1,
+                    backgroundColor: theme.vars
+                    ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
+                    : alpha(theme.palette.background.default, 1),
+                    overflow: 'auto',
+                })}
+                >
+                    <Stack
+                        sx={{
+                        alignItems: 'center',
+                        mx: 3,
+                        pb: 5,
+                        mt: { xs: 8, md: 0 },
                         }}
-                        title="vinicciusdev@gmail.com"
                     >
-                        vinicciusdev@gmail.com
-                    </Typography>
+                        <MainGrid />
+                    </Stack>
                 </Box>
-                <OptionsMenu />
-            </Stack>
-        </Drawer>
+            </Box>
+        </AppTheme>
     );
 }
