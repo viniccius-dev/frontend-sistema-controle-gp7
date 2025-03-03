@@ -6,6 +6,7 @@ import { AppNavbar} from "../../components/AppNavbar";
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import MainGrid from "../../components/MainGrid";
+import Header from '../../components/Header';
 
 import AppTheme from '../../styles/shared-theme-material-ui/AppTheme';
 import { chartsCustomizations } from '../../styles/shared-theme-material-ui/customizations/charts';
@@ -39,6 +40,7 @@ export function Home(props) {
                 })}
                 >
                     <Stack
+                        spacing={2}
                         sx={{
                         alignItems: 'center',
                         mx: 3,
@@ -46,6 +48,7 @@ export function Home(props) {
                         mt: { xs: 8, md: 0 },
                         }}
                     >
+                        <Header />
                         <MainGrid />
                     </Stack>
                 </Box>

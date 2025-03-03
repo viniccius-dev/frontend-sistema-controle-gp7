@@ -1,11 +1,9 @@
 import * as React from 'react';
 import { Toolbar } from './styles';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import DashboardRoundedIcon from '@mui/icons-material/DashboardRounded';
 import SideMenuMobile from '../SideMenuMobile';
 import MenuButton from '../MenuButton';
 import ColorModeIconDropdown from '../../styles/shared-theme-material-ui/ColorModeIconDropdown';
