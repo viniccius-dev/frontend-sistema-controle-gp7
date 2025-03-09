@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { ThemeProvider } from "styled-components";
 
 import { AppRoutes } from "./routes";
+import { AuthProvider } from "./hooks/auth";
 import theme from "./styles/theme";
 import GlobalStyles from "./styles/global";
 import { StyledEngineProvider } from "@mui/material";
@@ -20,7 +21,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <StyledEngineProvider injectFirst>
         
           <GlobalStyles />
-          <AppRoutes />
+          <AuthProvider>
+            <AppRoutes />
+          </AuthProvider>
         
         </StyledEngineProvider>
       

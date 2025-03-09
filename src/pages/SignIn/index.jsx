@@ -5,26 +5,40 @@ import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 import { Card, SignInContainer } from './styles';
 import ColorModeSelect from '../../styles/shared-theme-material-ui/ColorModeSelect';
 import gp7Icon from '../../assets/gp7-logo.jpeg'
+import { useAuth } from '../../hooks/auth';
+import { blue } from '@mui/material/colors';
+import { useTheme } from '@mui/material/styles';
 
 export function SignIn() {
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
+
   const [emailError, setEmailError] = React.useState(false);
   const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
   const [passwordError, setPasswordError] = React.useState(false);
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+  const [loading, setLoading] = React.useState(false);
 
-  const handleSubmit = (event) => {
+  const { signIn } = useAuth();
+
+  async function handleSubmit(event) {
     if (emailError || passwordError) {
       event.preventDefault();
       return;
     }
+    event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
+
+    setLoading(true);
+    await signIn({ 
+      email: data.get('email'), 
       password: data.get('password'),
     });
+    setLoading(false);
   };
 
   const validateInputs = () => {
@@ -35,14 +49,14 @@ export function SignIn() {
 
     if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
       setEmailError(true);
-      setEmailErrorMessage('Por favor insira um nome de usuário válido.');
+      setEmailErrorMessage('Por favor insira um e-mail válido.');
       isValid = false;
     } else {
       setEmailError(false);
       setEmailErrorMessage('');
     }
 
-    if (!password.value || password.value.length < 6) {
+    if (!password.value) {
       setPasswordError(true);
       setPasswordErrorMessage('Por favor insira uma senha.');
       isValid = false;
@@ -81,7 +95,7 @@ export function SignIn() {
             }}
           >
             <FormControl>
-              <FormLabel htmlFor="email">Usuário</FormLabel>
+              <FormLabel htmlFor="email">E-mail</FormLabel>
               <TextField
                 error={emailError}
                 helperText={
@@ -90,7 +104,7 @@ export function SignIn() {
                 id="email"
                 type="email"
                 name="email"
-                placeholder="Seu nome de usuário"
+                placeholder="seu@email.com"
                 autoComplete="email"
                 autoFocus
                 required
@@ -122,8 +136,18 @@ export function SignIn() {
               fullWidth
               variant="contained"
               onClick={validateInputs}
+              disabled={loading}
+              startIcon={loading ? <CircularProgress size={20} color="primary" /> : null}
+              sx={{
+                bgcolor: loading ? (isDarkMode ? "grey.800" : blue[700]) : "primary.main",
+                color: isDarkMode ? "black" : "white",
+                "&.Mui-disabled": {
+                  bgcolor: isDarkMode ? "grey.700" : blue[700],
+                  color: isDarkMode ? "black" : "white",
+                },
+              }}
             >
-              Sign in
+              {loading ? "Carregando..." : "Entrar"}
             </Button>
           </Box>
         </Card>

@@ -3,8 +3,39 @@ import { Drawer } from "./styles";
 import { drawerClasses } from '@mui/material/Drawer';
 import { MenuContent } from "../MenuContent";
 import { OptionsMenu } from "../OptionsMenu";
+import { useAuth } from "../../hooks/auth";
 
 export function SideMenu() {
+    
+    const { user } = useAuth();
+    
+    function stringToColor(string) {
+        let hash = 0;
+        let i;
+
+        for (i = 0; i < string.length; i += 1) {
+            hash = string.charCodeAt(i) + ((hash << 5) - hash);
+        }
+
+        let color = '#';    
+
+        for (i = 0; i < 3; i += 1) {
+            const value = (hash >> (i * 8)) & 0xff;
+            color += `00${value.toString(16)}`.slice(-2);
+        }
+        
+        return color;
+    }
+    
+    function stringAvatar(name) {
+        return {
+            sx: {
+                bgcolor: stringToColor(name),
+            },
+            children: `${name.split(' ')[0][0]}`,
+        };
+    }
+
     return (
         <Drawer
             variant="permanent"
@@ -39,11 +70,11 @@ export function SideMenu() {
                 <Avatar 
                     sizes="small"
                     alt="Imagem do usuário Logado"
-                    src="https://github.com/viniccius-dev.png/"
+                    {...stringAvatar(user.name)}
                 />
-                <Box sx={{ mr: "auto" }}>
+                <Box sx={{ mr: "auto", display: "flex", flexDirection: "column", justifyContent: "center" }}>
                     <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                        Marcos Vinícius
+                        { user.name }
                     </Typography>
                     <Typography 
                         variant="caption" 
@@ -55,9 +86,9 @@ export function SideMenu() {
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                         }}
-                        title="vinicciusdev@gmail.com"
+                        title={user.email}
                     >
-                        vinicciusdev@gmail.com
+                        {user.email}
                     </Typography>
                 </Box>
                 <OptionsMenu />

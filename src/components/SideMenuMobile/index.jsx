@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -8,8 +9,45 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import { MenuContent } from '../MenuContent';
+import { useAuth } from "../../hooks/auth";
 
 export default function SideMenuMobile({ open, toggleDrawer }) {
+    
+  const { user, signOut } = useAuth();
+  const navigation = useNavigate();
+
+  function stringToColor(string) {
+      let hash = 0;
+      let i;
+
+      for (i = 0; i < string.length; i += 1) {
+          hash = string.charCodeAt(i) + ((hash << 5) - hash);
+      }
+
+      let color = '#';    
+
+      for (i = 0; i < 3; i += 1) {
+          const value = (hash >> (i * 8)) & 0xff;
+          color += `00${value.toString(16)}`.slice(-2);
+      }
+      
+      return color;
+  }
+  
+  function stringAvatar(name) {
+      return {
+          sx: {
+              bgcolor: stringToColor(name),
+          },
+          children: `${name.split(' ')[0][0]}`,
+      };
+  }
+
+  function handleSignOut() {
+    navigation("/");
+    signOut();
+  }
+
   return (
     <Drawer
       anchor="right"
@@ -37,11 +75,11 @@ export default function SideMenuMobile({ open, toggleDrawer }) {
             <Avatar
               sizes="small"
               alt="Imagem Marcos Vinícius"
-              src="https://github.com/viniccius-dev.png"
               sx={{ width: 24, height: 24 }}
+              {...stringAvatar(user.name)}
             />
             <Typography component="p" variant="h6">
-              Marcos Vinícius
+              {user.name}
             </Typography>
           </Stack>
         </Stack>
@@ -51,8 +89,8 @@ export default function SideMenuMobile({ open, toggleDrawer }) {
           <Divider />
         </Stack>
         <Stack sx={{ p: 2 }}>
-          <Button variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
-            Logout
+          <Button onClick={handleSignOut} variant="outlined" fullWidth startIcon={<LogoutRoundedIcon />}>
+            Sair
           </Button>
         </Stack>
       </Stack>

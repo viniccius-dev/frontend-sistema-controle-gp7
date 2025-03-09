@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MenuItem } from "./styles";
 import { dividerClasses } from '@mui/material/Divider';
 import Menu from '@mui/material/Menu';
@@ -9,16 +10,24 @@ import ListItemIcon, { listItemIconClasses } from '@mui/material/ListItemIcon';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import MenuButton from '../MenuButton';
+import { useAuth } from '../../hooks/auth';
 
 export function OptionsMenu() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const { signOut } = useAuth();
+  const navigation = useNavigate();
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
+    navigation("/");
+    signOut();
   };
+
   return (
     <React.Fragment>
       <MenuButton

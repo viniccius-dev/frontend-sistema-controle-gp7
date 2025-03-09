@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { api } from '../../services/api';
 import { columns, rows as initialRows } from '../../data/gridData';
 import {
   IconButton,
@@ -16,8 +17,9 @@ import EditIcon from "@mui/icons-material/Edit";
 export default function CustomizedDataGrid() {
 
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState(null);
-  const [rows, setRows] = React.useState(initialRows);
+  const [rows, setRows] = React.useState([]);
   const [formData, setFormData] = React.useState({
     pallet: "",
     ballast: "",
@@ -29,6 +31,7 @@ export default function CustomizedDataGrid() {
     const selectedRow = rows.find((row) => row.id === id);
     if(selectedRow) {
       setFormData({
+        product: selectedRow.product,
         pallet: selectedRow.pallet,
         ballast: selectedRow.ballast,
         boxes: selectedRow.boxes,
@@ -51,31 +54,47 @@ export default function CustomizedDataGrid() {
     });
   };
   
-  const handleSave = () => {
-    setRows((prevRows) =>
-      prevRows.map((row) =>
-        row.id === selectedId ? { ...row, ...formData } : row
-      )
-    )
-
-    // Encontrar o próximo ID na lista
-    const currentIndex = rows.findIndex((row) => row.id === selectedId);
-    const nextRow = rows[currentIndex + 1]; // Próximo item na lista
-
-    if (nextRow) {
-      // Se houver um próximo ID, atualizar os dados no modal
-      setSelectedId(nextRow.id);
-      setFormData({
-        pallet: nextRow.pallet,
-        ballast: nextRow.ballast,
-        boxes: nextRow.boxes,
-        units: nextRow.units,
+  const handleSave = async () => {
+    setLoading(true);
+  
+    try {
+      await api.put("/count", {
+        item_id: selectedId,
+        pallet: formData.pallet,
+        ballast: formData.ballast,
+        boxes: formData.boxes,
+        units: formData.units,
       });
-    } else {
-      // Se não houver próximo ID, fechar o modal
-      handleClose();
+  
+      // Atualizar os dados na tabela
+      setRows((prevRows) =>
+        prevRows.map((row) =>
+          row.id === selectedId ? { ...row, ...formData } : row
+        )
+      );
+  
+      // Encontrar o próximo ID na lista
+      const currentIndex = rows.findIndex((row) => row.id === selectedId);
+      const nextRow = rows[currentIndex + 1];
+  
+      if (nextRow) {
+        setSelectedId(nextRow.id);
+        setFormData({
+          product: nextRow.product,
+          pallet: nextRow.pallet,
+          ballast: nextRow.ballast,
+          boxes: nextRow.boxes,
+          units: nextRow.units,
+        });
+      } else {
+        handleClose();
+      }
+    } catch (error) {
+      alert(error.response?.data?.message || "Erro ao salvar os dados.");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
   
   // Adicionando a coluna de edição
   const columnsWithEdit = [
@@ -101,6 +120,27 @@ export default function CustomizedDataGrid() {
       ),
     },
   ];
+
+  React.useEffect(() => {
+    async function fetchCount() {
+        setLoading(true);
+
+        try {
+            const response = await api.get("/count");
+            setRows(response.data);
+        } catch(error) {
+            if(error.response) {
+                alert(error.response.data.message);
+            } else {
+                alert("Não foi possível acessar os dados da contagem");
+            };
+        } finally {
+            setLoading(false);
+        };
+      };
+
+      fetchCount();
+  }, []);
   
   return (
     <>
@@ -108,6 +148,7 @@ export default function CustomizedDataGrid() {
       <DataGrid
         rows={rows}
         columns={columnsWithEdit}
+        loading={loading}
         getRowClassName={(params) =>
           params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
         }
@@ -143,12 +184,31 @@ export default function CustomizedDataGrid() {
             },
           },
         }}
+        localeText={{
+          toolbarDensity: 'Densidade',
+          toolbarDensityLabel: 'Densidade',
+          toolbarDensityCompact: 'Compacta',
+          toolbarDensityStandard: 'Padrão',
+          toolbarDensityComfortable: 'Confortável',
+          columnMenuSortAsc: 'Ordem crescente',
+          columnMenuSortDesc: 'Ordem decrescente',
+          columnMenuManageColumns: 'Gerenciar Colunas',
+          columnMenuFilter: 'Filtrar',
+          columnMenuHideColumn: 'Ocultar coluna',
+          columnMenuShowColumns: 'Mostrar colunas',
+          footerRowSelected: count => `${count} linha(s) selecionada(s)`,
+          footerTotalRows: 'Total de linhas:',
+          MuiTablePagination: {
+            labelDisplayedRows: ({ from, to, count }) => `${from}–${to} de ${count}`,
+            labelRowsPerPage: 'Linhas por página:',
+          },
+        }}
       />
       
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Editar Registro</DialogTitle>
         <DialogContent>
-          <p>Bohemia 350ml - ID: {selectedId}</p>
+          <p>{formData.product}</p>
           <Grid container sx={{ pt:4 }} spacing={2}>
             <Grid item xs={6}>
               <TextField
